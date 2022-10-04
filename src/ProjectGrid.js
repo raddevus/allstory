@@ -1,6 +1,10 @@
 import React, { StrictMode } from 'react';
 import { Project } from './main.js';
 import { projects } from './App';
+
+let allPs = [];
+let mountCount = 0;
+
 export class ProjectGrid extends React.Component {
   constructor() {
     super();
@@ -8,23 +12,49 @@ export class ProjectGrid extends React.Component {
   }
   render() {
     // looks for a property named allProjects in this.state & this.props
-    const allPs =
-      'allProjects' in this.state ? this.state.allProjects : this.props.allProjects;
+    allPs =
+      'allProjects' in this.state
+        ? this.state.allProjects
+        : this.props.allProjects;
     console.log(`allProjects.length : ${allPs.length}`);
+
     if (allPs.length == 0) {
       return;
     }
 
     let allRows = [];
     let rowKey = 0;
-    allRows.push(<input type="text" id="title" placeholder="project title" />);
     allRows.push(
-      <button onClick={this.clickHandler.bind(this)}>Add Project</button>
+      <input
+        key={`${rowKey++}`}
+        type="text"
+        id="title"
+        placeholder="project title"
+      />
+    );
+
+    allRows.push(
+      <button onClick={this.clickHandler.bind(this)} key={`${rowKey++}`}>
+        Add Project
+      </button>
+    );
+
+    allRows.push(
+      <div>
+        <select
+          id="projectList"
+          className="form-select"
+          aria-label="Default select example"
+          onChange={this.changeHandler.bind(this)}
+        >
+          <option value=""></option>);
+        </select>
+      </div>
     );
 
     allPs.forEach((p) => {
       allRows.push(
-        <div key={rowKey++}>
+        <div key={`${rowKey++}`}>
           <h3>{p.name}</h3>
           <p>{p.id}</p>
         </div>
@@ -35,9 +65,37 @@ export class ProjectGrid extends React.Component {
 
   clickHandler() {
     let title = document.querySelector('#title').value;
-    if (title === ""){return;} // don't add if it is a blank
+    if (title === '') {
+      return;
+    } // don't add if it is a blank
     document.querySelector('#title').value = '';
-    projects.push(new Project(title));
+    let p = new Project(title);
+    projects.push(p);
+    let projectList = document.querySelector('#projectList');
+    projectList.append(new Option(p.name, JSON.stringify(p), false, false));
     this.setState({ allProjects: projects });
+  }
+
+  changeHandler(e) {
+    // item's properties will match a Project
+    let item = JSON.parse(e.target.value);
+    console.log(`item.name: ${item.name}`);
+
+    console.log(`item.id ${item.id}`);
+  }
+
+  componentDidMount() {
+    mountCount++;
+    console.log('yeah, mounted!');
+    let projectList = document.querySelector('#projectList');
+    let optionNames = [...projectList.options].map((o) => o.text);
+    console.log(optionNames);
+    console.log(`allPs.length : ${allPs.length}`);
+    if (mountCount <= 1) {
+      allPs.forEach((p) => {
+        //console.log(`p.title: ${p.title}`);
+        projectList.append(new Option(p.name, JSON.stringify(p), false, false));
+      });
+    }
   }
 }

@@ -22,6 +22,7 @@ export default function App() {
       <h1>AllStory</h1>
       <p>Track all your User Stories for all your projects.</p>
       <div id="projects"></div>
+      
       <ProjectGrid allProjects={projects} />
     </div>
   );
