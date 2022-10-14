@@ -4,6 +4,10 @@ import './style.css';
 import { initUser } from './main.js';
 import { ProjectGrid } from './ProjectGrid';
 import { Project } from './main';
+import { FromObjArray } from './FromObjArray';
+import { fieldNames, headerText } from './data/data';
+
+let x = 'this is a test';
 
 let localUser = null;
 
@@ -22,8 +26,9 @@ export default function App() {
       <h1>AllStory</h1>
       <p>Track all your User Stories for all your projects.</p>
       <div id="projects"></div>
-      
+
       <ProjectGrid allProjects={projects} />
+      <FromObjArray headers={headerText} data={projects} fields={fieldNames} />
     </div>
   );
 }
